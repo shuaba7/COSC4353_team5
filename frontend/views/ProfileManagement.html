@@ -25,20 +25,25 @@
     <h1>Client Profile Management</h1>
     <form id="profileForm">
         <div>
-            <label for="fullName">Full Name:</label>
-            <input type="text" id="fullName" name="fullName" maxlength="50" required>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" maxlength="50" required value="John">
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" maxlength="50" required value="Doe">
         </div>
         <div>
             <label for="address1">Address 1:</label>
-            <input type="text" id="address1" name="address1" maxlength="100" required>
+            <input type="text" id="address1" name="address1" maxlength="100" required value="Address line 1">
         </div>
         <div>
-            <label for="address2">Address 2:</label>
-            <input type="text" id="address2" name="address2" maxlength="100">
+            <label for="address2">Address 2:<span class="note">(Optional)</span> </label>             
+            <input type="text" id="address2" name="address2" maxlength="100" value="Address line 2">
+
         </div>
         <div>
             <label for="city">City:</label>
-            <input type="text" id="city" name="city" maxlength="100" required>
+            <input type="text" id="city" name="city" maxlength="100" required value="City">
         </div>
         <div>
             <label for="state">State:</label>
@@ -99,7 +104,7 @@
         </div>
         <div>
             <label for="zipcode">Zipcode:</label>
-            <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required>
+            <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required value="12345">
         </div>
         <div>
             <input type="submit" value="Submit">
