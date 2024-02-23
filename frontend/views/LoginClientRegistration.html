@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login and Registration Forms</title>
+</head>
+<body>
+
+<!-- Login Form -->
+<div id="login-form">
+    <h2>Login</h2>
+    <form action="/login" method="post"> <!-- Update the action URL as needed -->
+        <div>
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" name="username" required>
+        </div>
+        <div>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" required>
+        </div>
+        <div>
+            <button type="submit">Login</button>
+        </div>
+        <div>
+            Not a client yet? <a href="#register-form">Register here</a>
+        </div>
+    </form>
+</div>
+
+<!-- Client Registration Form -->
+<div id="register-form">
+    <h2>Client Registration</h2>
+    <form action="/register" method="post"> <!-- Update the action URL as needed -->
+        <div>
+            <label for="register-username">Username:</label>
+            <input type="text" id="register-username" name="username" required>
+        </div>
+        <div>
+            <label for="register-password">Password:</label>
+            <input type="password" id="register-password" name="password" required>
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
