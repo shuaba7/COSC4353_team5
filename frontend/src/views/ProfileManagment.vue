@@ -1,27 +1,12 @@
+<template>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Profile Management</title>
-    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-    <nav>
-        <table>
-            <tr>
-                <td><a href="index.html">Home</a></td>
-                <td>|</td>
-                <td><a href="ProfileManagement.html">Profile Management</a></td>
-                <td>|</td>
-                <td><a href="QuoteHistory.html">Quote History</a></td>
-                <td>|</td>
-                <td><a href="FuelQuote.html">Fuel Quote</a></td>
-                <td>|</td>
-                <td><a href="LoginClientRegistration.html"> Login </a></td>
-            </tr>
-        </table>
-    </nav>
 
 
 
@@ -120,3 +105,20 @@
 </footer>
 
 </html>
+
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+
+</style>
