@@ -7,35 +7,32 @@
     <title>Client Profile Management</title>
 </head>
 <body>
-
-
-
-    <h1>Client Profile Management</h1>
+ <h1>Client Profile Management  (ID#: {{ this.formData.userId }})</h1>
     <form id="profileForm">
         <div>
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" maxlength="50" required value="John">
+            <input type="text" id="firstName" name="firstName" maxlength="50" required v-model="this.formData.firstName" >
         </div>
         <div>
             <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" maxlength="50" required value="Doe">
+            <input type="text" id="lastName" name="lastName" maxlength="50" required v-model="this.formData.lastName">
         </div>
         <div>
             <label for="address1">Address 1:</label>
-            <input type="text" id="address1" name="address1" maxlength="100" required value="Address line 1">
+            <input type="text" id="address1" name="address1" maxlength="100" required v-model="this.formData.address1">
         </div>
         <div>
             <label for="address2">Address 2:<span class="note">(Optional)</span> </label>             
-            <input type="text" id="address2" name="address2" maxlength="100" value="Address line 2">
+            <input type="text" id="address2" name="address2" maxlength="100" v-model="this.formData.address2">
 
         </div>
         <div>
             <label for="city">City:</label>
-            <input type="text" id="city" name="city" maxlength="100" required value="City">
+            <input type="text" id="city" name="city" maxlength="100" required v-model="this.formData.city">
         </div>
         <div>
             <label for="state">State:</label>
-            <select id="state" name="state" required>
+            <select id="state" name="state" required v-model="this.formData.state">
                 <option value="">Select State</option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
@@ -92,10 +89,10 @@
         </div>
         <div>
             <label for="zipcode">Zipcode:</label>
-            <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required value="12345">
+            <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required v-model="this.formData.zipcode">
         </div>
         <div>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" @click="submitForm">
         </div>
     </form>
 </body>
@@ -109,15 +106,53 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  data() {
+    return {
+      formData: {
+        userId: '',
+        firstName: '',
+        lastName: '',
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        zipcode: ''
+        // Add other form fields here
+      },
+      userId: 1 // TESTING ID
+    };
+  },
+  created() {
+    // Fetch user information when the component is created
+    this.fetchUserInformation(this.userId);
+  },
+  methods: {
+    async fetchUserInformation() {
+      try {
+        const response = await axios.get(`http://localhost:3000/user-information/${this.userId}`); //LOCALHOSTING BACKEND
+        this.formData = response.data;
+        console.log(this.formData)
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    },
+    async submitForm() {
+      try {
+        // Make a PUT request to update the user information
+        console.log( "Sending", this.formData.firstName)
+        await axios.put(`http://localhost:3000/update-user-information/${this.userId}`, this.formData);
+        console.log('User information updated successfully!');
+      } catch (error) {
+        console.error('Error updating user information:', error);
+      }
+    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 
