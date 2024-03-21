@@ -77,3 +77,6 @@
     }
   });
 </script>
+
+<style scoped>
+</style>
