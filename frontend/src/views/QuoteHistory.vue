@@ -7,7 +7,7 @@
   <title>Quote History</title>
 </head>
 <body>
-  <div id="app">
+  <div id="quote_History">
     <nav>
       <table>
         <tr>
