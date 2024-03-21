@@ -1,3 +1,4 @@
+<template>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,31 +47,33 @@
     </table>
   </div>
 
-  <script src="http://localhost:3000/user-information/${this.userId}"></script>
-  <script>
-    new Vue({
-      el: '#app',
-      data() {
-        return {
-          quoteHistory: []
-        };
-      },
-      mounted() {
-        this.fetchQuoteHistory();
-      },
-      methods: {
-        fetchQuoteHistory() {
-          fetch('/api/quote-history')
-            .then(response => response.json())
-            .then(data => {
-              this.quoteHistory = data;
-            })
-            .catch(error => {
-              console.error('Error fetching quote history:', error);
-            });
-        }
-      }
-    });
-  </script>
 </body>
 </html>
+</template>
+
+<script src="http://localhost:3000/user-information/${this.userId}"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        quoteHistory: []
+      };
+    },
+    mounted() {
+      this.fetchQuoteHistory();
+    },
+    methods: {
+      fetchQuoteHistory() {
+        fetch('/api/quote-history')
+          .then(response => response.json())
+          .then(data => {
+            this.quoteHistory = data;
+          })
+          .catch(error => {
+            console.error('Error fetching quote history:', error);
+          });
+      }
+    }
+  });
+</script>
