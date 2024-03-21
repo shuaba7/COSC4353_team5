@@ -1,0 +1,30 @@
+{
+    "userInformation": [{
+        "userId": 1,
+        "firstName": "Joshua",
+        "lastName": "Doe",
+        "address1": "123 Main St",
+        "address2": "Apt 101",
+        "city": "Anytown",
+        "state": "CA",
+        "zipcode": "12345"
+    }, {
+        "userId": 2,
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "address1": "456 Elm St",
+        "address2": "",
+        "city": "Smallville",
+        "state": "NY",
+        "zipcode": "54321"
+    }, {
+        "userId": 3,
+        "firstName": "Alice",
+        "lastName": "Johnson",
+        "address1": "789 Oak St",
+        "address2": "Unit 3",
+        "city": "Bigtown",
+        "state": "TX",
+        "zipcode": "98765"
+    }]
+}

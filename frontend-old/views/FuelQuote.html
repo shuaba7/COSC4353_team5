@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Fuel Quote Form</title>
+   <link rel="stylesheet" href="../styles/styles.css">
+</head>
+
+<body>
+    <nav>
+        <table>
+            <tr>
+                <td><a href="index.html">Home</a></td>
+                <td>|</td>
+                <td><a href="ProfileManagement.html">Profile Management</a></td>
+                <td>|</td>
+                <td><a href="QuoteHistory.html">Quote History</a></td>
+                <td>|</td>
+                <td><a href="FuelQuote.html">Fuel Quote</a></td>
+                <td>|</td>
+                <td><a href="LoginClientRegistration.html"> Login </a></td>
+            </tr>
+        </table>
+    </nav>
+
+
+   <h1>Fuel Quote Form</h1>
+   <form id="fuelQuoteForm">
+       <div>
+           <label for="gallonsRequested">Gallons Requested:</label>
+           <input type="number" id="gallonsRequested" name="gallonsRequested" required min="1">
+       </div>
+       <div>
+           <label for="deliveryAddress">Delivery Address:</label>
+           <input type="text" id="deliveryAddress" name="deliveryAddress" readonly>
+       </div>
+       <div>
+           <label for="deliveryDate">Delivery Date:</label>
+           <input type="date" id="deliveryDate" name="deliveryDate" required>
+       </div>
+       <div>
+           <label for="suggestedPrice">Suggested $ / Gallon:</label>
+           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly>
+       </div>
+       <div>
+           <label for="totalAmountDue">Total Amount Due:</label>
+           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly>
+       </div>
+       <button type="submit">Submit</button>
+   </form>
+</body>
+
+<footer>
+   <p>Joshua Batac | Christopher Le | Samuel Mlinka | Mohammed Noorani</p>
+</footer>
+
+</html>
