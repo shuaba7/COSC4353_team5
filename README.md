@@ -34,7 +34,7 @@ Running the Project
 1. Start the backend server:
 
    cd ../backend
-   npm start
+   node index.js
 
    This will start the Node.js backend server.
 
