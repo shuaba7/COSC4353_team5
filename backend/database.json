@@ -1,14 +1,16 @@
 {
-    "userInformation": [{
+    "userInformation": [
+      {
         "userId": 1,
-        "firstName": "Joshua",
+        "firstName": "123123091390",
         "lastName": "Doe",
         "address1": "123 Main St",
         "address2": "Apt 101",
         "city": "Anytown",
         "state": "CA",
         "zipcode": "12345"
-    }, {
+      },
+      {
         "userId": 2,
         "firstName": "Jane",
         "lastName": "Smith",
@@ -17,7 +19,8 @@
         "city": "Smallville",
         "state": "NY",
         "zipcode": "54321"
-    }, {
+      },
+      {
         "userId": 3,
         "firstName": "Alice",
         "lastName": "Johnson",
@@ -26,5 +29,41 @@
         "city": "Bigtown",
         "state": "TX",
         "zipcode": "98765"
-    }]
-}
+      }
+    ],
+    "fuelInformation": [
+      {
+        "userID": 1,
+        "gallonsRequested": 100,
+        "deliveryAddress": "123 Main St, Apt 101, Anytown, CA, 12345",
+        "deliveryDate": "2024-03-21",
+        "suggestedPricePerGallon": 3.50,
+        "totalAmountDue": 350.00
+      },
+      {
+        "userID": 2,
+        "gallonsRequested": 150,
+        "deliveryAddress": "456 Elm St, Smallville, NY, 54321",
+        "deliveryDate": "2024-03-22",
+        "suggestedPricePerGallon": 3.25,
+        "totalAmountDue": 487.50
+      },
+      {
+        "userID": 3,
+        "gallonsRequested": 200,
+        "deliveryAddress": "789 Oak St, Unit 3, Bigtown, TX, 98765",
+        "deliveryDate": "2024-03-23",
+        "suggestedPricePerGallon": 3.75,
+        "totalAmountDue": 750.00
+      },
+      {
+        "userID": 1,
+        "gallonsRequested": 120,
+        "deliveryAddress": "123 Main St, Apt 101, Anytown, CA, 12345",
+        "deliveryDate": "2024-03-25",
+        "suggestedPricePerGallon": 3.60,
+        "totalAmountDue": 432.00
+      }
+    ]
+  }
+  
