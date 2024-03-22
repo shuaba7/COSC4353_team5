@@ -8,21 +8,7 @@
     </head>
     <body>
       <div id="quote_History">
-        <nav>
-          <table>
-            <tr>
-              <td><a href="index.html">Home</a></td>
-              <td>|</td>
-              <td><a href="ProfileManagement.html">Profile Management</a></td>
-              <td>|</td>
-              <td><a href="QuoteHistory.html">Quote History</a></td>
-              <td>|</td>
-              <td><a href="FuelQuote.html">Fuel Quote</a></td>
-              <td>|</td>
-              <td><a href="LoginClientRegistration.html"> Login </a></td>
-            </tr>
-          </table>
-        </nav>
+
     
         <h1 class="title">Quote History</h1>
         <table class="table">
