@@ -1,6 +1,6 @@
 <template>
-    <!DOCTYPE html>
-    <html lang="en">
+  <!DOCTYPE html>
+  <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +8,8 @@
     </head>
     <body>
       <div id="quote_History">
-
-    
-        <h1 class="title">Quote History</h1>
-        <table class="table">
+        <h1 class="title">Quote History for User # {{ this.userID }}</h1>
+        <table class="quote-table">
           <thead>
             <tr>
               <th>Gallons Requested</th>
@@ -23,48 +21,69 @@
           </thead>
           <tbody>
             <tr v-for="entry in quoteHistory" :key="entry.id">
-              <td>{{ entry.GallonsRequested }}</td>
-              <td>{{ entry.DeliveryAddress }}</td>
-              <td>{{ entry.DeliveryDate }}</td>
-              <td>{{ entry.SuggestedPrice }}</td>
-              <td>{{ entry.AmountDue }}</td>
+              <td>{{ entry.gallonsRequested }}</td>
+              <td>{{ entry.deliveryAddress }}</td>
+              <td>{{ entry.deliveryDate }}</td>
+              <td>{{ entry.suggestedPricePerGallon }}</td>
+              <td>{{ entry.totalAmountDue }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-    
     </body>
-    </html>
-    </template>
+  </html>
+</template>
 
 <script>
-  
-  /*
-  new Vue({
-    el: '#app',
-    data() {
-      return {
-        quoteHistory: []
-      };
-    },
-    mounted() {
-      this.fetchQuoteHistory();
-    },
-    methods: {
-      fetchQuoteHistory() {
-        fetch('/api/quote-history')
-          .then(response => response.json())
-          .then(data => {
-            this.quoteHistory = data;
-          })
-          .catch(error => {
-            console.error('Error fetching quote history:', error);
-          });
-      }
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      quoteHistory: [],
+      userID: 1 // TESTING HARD CODED
+    };
+  },
+  created() {
+    this.getUserFuelHistory();
+  },
+  methods: {
+   async getUserFuelHistory() {
+      axios.get(`http://localhost:3000/user-fuel-history/${this.userID}`)
+        .then(response => {
+          this.quoteHistory = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching user fuel history:', error);
+        });
     }
-  });
-  */
+  }
+};
 </script>
+
+<style scoped>
+.title {
+    text-align: center;
+}
+
+.quote-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.quote-table th,
+.quote-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.quote-table th {
+    background-color: #f2f2f2;
+}
+</style>
+
 
 <style scoped>
 .title {

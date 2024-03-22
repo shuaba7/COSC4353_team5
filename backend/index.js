@@ -1,6 +1,5 @@
 //api methods
 
-
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
@@ -13,12 +12,12 @@ app.use(express.json());
 app.use(cors());
 
 
-// FOR TESTING PURPOSES
-// Endpoint to serve user information from a JSON file 
+
+// USER INFO
 app.get("/user-information/:userId", (req, res) => {
     try {
       const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-      const data = fs.readFileSync("database.json", "utf8");
+      const data = fs.readFileSync("database.json", "utf8"); // FOR TESTING PURPOSES
       const userInformation = JSON.parse(data).userInformation;
       const user = userInformation.find(user => user.userId === userId);
       if (!user) {
@@ -51,6 +50,27 @@ app.put("/update-user-information/:userId", (req, res) => {
         console.error("Error updating user information:", error);
         res.status(500).json({ error: "Internal server error" });
     }
+});
+
+
+
+//FUEL HISTORY
+// Endpoint to retrieve user fuel history
+app.get("/user-fuel-history/:userId", (req, res) => {
+  try {
+      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+      const data = fs.readFileSync("database.json", "utf8");
+      const fuelInformation = JSON.parse(data).fuelInformation;
+      // Filter fuel information based on userId
+      const userFuelHistory = fuelInformation.filter(entry => entry.userID === userId);
+      if (userFuelHistory.length === 0) {
+          return res.status(404).json({ error: "User fuel history not found" });
+      }
+      res.json(userFuelHistory);
+  } catch (error) {
+      console.error("Error reading user fuel history:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 
