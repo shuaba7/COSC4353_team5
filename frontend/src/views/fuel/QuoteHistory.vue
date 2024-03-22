@@ -51,8 +51,9 @@
     </html>
     </template>
 
-<script src="http://localhost:3000/user-information/${this.userId}"></script>
 <script>
+  
+  /*
   new Vue({
     el: '#app',
     data() {
@@ -76,6 +77,7 @@
       }
     }
   });
+  */
 </script>
 
 <style scoped>

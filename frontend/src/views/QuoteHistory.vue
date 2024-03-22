@@ -8,22 +8,6 @@
 </head>
 <body>
   <div id="quote_History">
-    <nav>
-      <table>
-        <tr>
-          <td><a href="index.html">Home</a></td>
-          <td>|</td>
-          <td><a href="ProfileManagement.html">Profile Management</a></td>
-          <td>|</td>
-          <td><a href="QuoteHistory.html">Quote History</a></td>
-          <td>|</td>
-          <td><a href="FuelQuote.html">Fuel Quote</a></td>
-          <td>|</td>
-          <td><a href="LoginClientRegistration.html"> Login </a></td>
-        </tr>
-      </table>
-    </nav>
-
     <h1 class="title">Quote History</h1>
     <table class="table">
       <thead>
@@ -79,4 +63,24 @@
 </script>
 
 <style scoped>
+.title {
+    text-align: center;
+}
+
+.quote-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.quote-table th, .quote-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.quote-table th {
+    background-color: #f2f2f2;
+}
+
 </style>
