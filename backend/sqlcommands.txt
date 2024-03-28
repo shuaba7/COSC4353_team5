@@ -1,0 +1,27 @@
+CREATE TABLE userInformation (
+    userId INT PRIMARY KEY,
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    address1 VARCHAR(255),
+    address2 VARCHAR(255),
+    city VARCHAR(255),
+    state CHAR(2),
+    zipcode VARCHAR(10)
+);
+
+CREATE TABLE fuelInformation (
+    userId INT,
+    gallonsRequested INT,
+    deliveryAddress VARCHAR(255),
+    deliveryDate DATE,
+    suggestedPricePerGallon DECIMAL(10, 2),
+    totalAmountDue DECIMAL(10, 2),
+    FOREIGN KEY (userId) REFERENCES userInformation(userId)
+);
+
+CREATE TABLE userLogin (
+    userId INT PRIMARY KEY,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    FOREIGN KEY (userId) REFERENCES userInformation(userId)
+);
