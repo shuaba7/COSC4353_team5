@@ -63,15 +63,15 @@ export default {
     methods: {
         async getAddress() {
             try {
-                const response = await axios.get('http://localhost:3000/user-fuel-quote/${this.userID}'); 
-                this.userData.deliveryAddress = response.data;
+                const response = await axios.get(`http://localhost:3000/user-fuel-quote/${this.userID}`); 
+                this.userData.deliveryAddress = JSON.stringify(response.data);
             } catch (error) {
                 console.error('Error retrieving address:', error);
             }
         },
         async getFuelPrice() {
             try {
-                const response = await axios.post('http://localhost:3000/user-fuel-quote/${this.userID}', {
+                const response = await axios.post(`http://localhost:3000/user-fuel-quote/${this.userID}`, {
                 date: this.deliveryDate,
                 //gallons: this.gallonsRequested
                 });

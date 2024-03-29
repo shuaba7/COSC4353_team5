@@ -83,10 +83,19 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
 
     //Query database to retrieve address based on userID #
     //Temporarily hard coded address
-    const address = '123 Street Rd';
-    if (!address) {
-      return res.status(404).json({ error: 'Address not found' });
+    const data = fs.readFileSync("database.json", "utf8"); // FOR TESTING PURPOSES
+    const userInformation = JSON.parse(data).userInformation;
+    const user = userInformation.find(user => user.userId === userId);
+
+    if (!user) {
+      // If user is not found, return 404 status code
+      return res.status(404).json({ error: 'User not found' });
     }
+
+    const {address1, address2, city, state, zipcode} = user;
+    const userSubset = {address1, ...(address2 && {address2}), city, state, zipcode};
+    const valuesArray = Object.values(userSubset);
+    const address = valuesArray.join(', ');
 
     res.json(address);
   } catch (error) {
