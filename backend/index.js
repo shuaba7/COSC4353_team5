@@ -74,6 +74,53 @@ app.get("/user-fuel-history/:userId", (req, res) => {
 });
 
 
+
+//FUEL QUOTE FORM
+//End point to calculate fuel price
+app.get("/user-fuel-quote/:userId", (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+
+    //Query database to retrieve address based on userID #
+    //Temporarily hard coded address
+    const address = '123 Street Rd';
+    if (!address) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+
+    res.json(address);
+  } catch (error) {
+    console.error("Error retrieving address: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/user-fuel-quote/:userId", (req, res) => {
+  const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+  const {date, gallons} = req.body;
+
+  try {
+      //Query database to find suggested price based on provided date and address
+      //temporarily hard coded suggested price
+      const suggestedPrice = 2.50;
+      
+      if (!suggestedPrice) {
+        return res.status(404).json({ error: 'Suggested price not found for the given date'});
+      }
+
+      
+      const totalAmount = suggestedPrice * gallons;
+
+      
+
+      res.json({suggestedPrice, totalAmount});
+  } catch (error) {
+    console.error("Error calculating price", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 app.listen(port, () => { //console.log("Server starting")
   console.log(`Server is running on port ${port}`);
 });

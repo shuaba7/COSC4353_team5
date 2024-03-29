@@ -13,25 +13,25 @@
    <form id="fuelQuoteForm">
        <div>
            <label for="gallonsRequested">Gallons Requested:</label>
-           <input type="number" id="gallonsRequested" name="gallonsRequested" required min="1">
+           <input type="number" id="gallonsRequested" name="gallonsRequested" required min="0" v-model="this.userData.gallonsRequested">
        </div>
        <div>
            <label for="deliveryAddress">Delivery Address:</label>
-           <input type="text" id="deliveryAddress" name="deliveryAddress" readonly>
+           <input type="text" id="deliveryAddress" name="deliveryAddress" readonly v-model="this.userData.deliveryAddress">
        </div>
        <div>
            <label for="deliveryDate">Delivery Date:</label>
-           <input type="date" id="deliveryDate" name="deliveryDate" required>
+           <input type="date" id="deliveryDate" name="deliveryDate" required v-model="this.userData.deliveryDate">
        </div>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
-           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly>
+           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="this.userData.suggestedPrice">
        </div>
        <div>
            <label for="totalAmountDue">Total Amount Due:</label>
-           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly>
+           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="this.userData.totalAmount">
        </div>
-       <button type="submit">Submit</button>
+       <button @click.prevent="getFuelPrice">Submit</button>
    </form>
 </body>
 </html>
@@ -39,11 +39,52 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    setup() {
-        
+    data() {
+        return {
+            
+            userData: {
+                gallonsRequested: 0,
+                deliveryAddress: '',
+                deliveryDate: '',
+                suggestedPrice: null,
+                totalAmount: null
+            },
+            userID: 1 //TEST
+        };
     },
-}
+
+    created() {
+        this.getAddress();
+    },
+
+    methods: {
+        async getAddress() {
+            try {
+                const response = await axios.get('http://localhost:3000/user-fuel-quote/${this.userID}'); 
+                this.userData.deliveryAddress = response.data;
+            } catch (error) {
+                console.error('Error retrieving address:', error);
+            }
+        },
+        async getFuelPrice() {
+            try {
+                const response = await axios.post('http://localhost:3000/user-fuel-quote/${this.userID}', {
+                date: this.deliveryDate,
+                //gallons: this.gallonsRequested
+                });
+                this.userData.suggestedPrice = response.data.suggestedPrice;
+                this.userData.totalAmount = response.data.totalAmount;
+                this.userData.totalAmount = this.userData.suggestedPrice * this.userData.gallonsRequested;
+            }
+            catch(error) {
+                console.error('Error calculating price: ', error);
+            }
+        }
+    }
+};
 </script>
 
 <style scoped>
