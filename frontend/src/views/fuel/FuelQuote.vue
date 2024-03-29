@@ -52,7 +52,7 @@ export default {
                 suggestedPrice: null,
                 totalAmount: null
             },
-            userID: 1 //TEST
+            userId: 1 //TEST
         };
     },
 
@@ -63,15 +63,15 @@ export default {
     methods: {
         async getAddress() {
             try {
-                const response = await axios.get(`http://localhost:3000/user-fuel-quote/${this.userID}`); 
-                this.userData.deliveryAddress = JSON.stringify(response.data);
+                const response = await axios.get(`http://localhost:3000/user-fuel-quote/${this.userId}`); 
+                this.userData.deliveryAddress = response.data;
             } catch (error) {
                 console.error('Error retrieving address:', error);
             }
         },
         async getFuelPrice() {
             try {
-                const response = await axios.post(`http://localhost:3000/user-fuel-quote/${this.userID}`, {
+                const response = await axios.post(`http://localhost:3000/user-fuel-quote/${this.userId}`, {
                 date: this.deliveryDate,
                 //gallons: this.gallonsRequested
                 });
@@ -81,6 +81,15 @@ export default {
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
+            }
+        },
+        async updateHistory() {
+            try {
+                const combinedData = Object.assign({userId: this.userId}, this.userData);
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, this.combinedData); 
+                
+            } catch (error) {
+                console.error('Error retrieving address:', error);
             }
         }
     }
