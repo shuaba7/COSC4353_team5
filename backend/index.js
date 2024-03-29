@@ -129,6 +129,41 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
   }
 });
 
+app.put("/user-fuel-quote/:userId", (req, res) => {
+
+  try {
+    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+    newHistory = req.body; // new data to add to fuel history
+    fs.readFile("database.json", "utf8", (err, data) => {
+      if (err) {
+        console.error("Error reading database file:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      let fuelInformation;
+      try {
+        fuelInformation = JSON.parse(data).fuelInformation;
+      } catch (parseError) {
+        console.error("Error parsing JSON data:", parseError);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+    fuelInformation.push(newHistory);
+
+    fs.writeFileSync("database.json", JSON.stringify({ fuelInformation }), (writeErr) => {
+      if (writeErr) {
+        console.error("Error writing to database file:", writeErr);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      res.json({ message: "Fuel history updated successfully" });
+    });
+  });
+  } catch (error) {
+    console.error("Error calculating price", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 app.listen(port, () => { //console.log("Server starting")
   console.log(`Server is running on port ${port}`);
