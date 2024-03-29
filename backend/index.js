@@ -164,6 +164,48 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
   }
 });
 
+app.post('/login', (req, res) => {
+    try {
+      // Simulate database lookup with Promise
+      const username = req.body.username;
+      const password = req.body.password;
+
+      // find a user in the db with the same username and pass. hardcoding for now
+      const user = {
+        "username": "tempUser123",
+        "password": "TempPass456!"
+      }
+  
+
+      if (user) {
+          res.send({ status: 'success', message: 'Logged in successfully' });
+      } else {
+          res.status(401).send({ status: 'error', message: 'Authentication failed' });
+      }
+  } catch (error) {
+      console.error('Login Error:', error);
+      res.status(500).send({ status: 'error', message: 'Internal server error' });
+  }
+});
+
+app.post('/register', (req, res) => {
+    try {
+      //create user in the db
+      userinfomation = req.body;
+
+      //using tmp user here
+      const user = {
+        "id":1234,
+        "username": "tempUser123",
+        "password": "TempPass456!"
+      }
+      res.send({ status: 'success', message: 'Registered successfully',userId: user.id });
+  } catch (error) {
+      console.error('Registration Error:', error);
+      res.status(500).send({ status: 'error', message: 'Internal server error' });
+  }
+});
+
 
 app.listen(port, () => { //console.log("Server starting")
   console.log(`Server is running on port ${port}`);
