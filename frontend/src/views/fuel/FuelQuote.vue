@@ -52,7 +52,7 @@ export default {
                 suggestedPrice: null,
                 totalAmount: null
             },
-            userId: 1 //TEST
+            userId: 1 //TEST,
         };
     },
 
@@ -86,7 +86,8 @@ export default {
         async updateHistory() {
             try {
                 const combinedData = Object.assign({userId: this.userId}, this.userData);
-                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, this.combinedData); 
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`,combinedData); 
+                console.log(response);
                 
             } catch (error) {
                 console.error('Error retrieving address:', error);

@@ -32,26 +32,30 @@ app.get("/user-information/:userId", (req, res) => {
   
 // Endpoint to update user information
 app.put("/update-user-information/:userId", (req, res) => {
-    try {
-        const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-        const newData = req.body; // New data to update user information
-        const data = fs.readFileSync("database.json", "utf8");
-        let userInformation = JSON.parse(data).userInformation;
-        const index = userInformation.findIndex(user => user.userId === userId);
-        if (index === -1) {
-            return res.status(404).json({ error: "User not found" });
-        }
-        // Update user information with the new data
-        userInformation[index] = { ...userInformation[index], ...newData };
-        // Write updated user information back to the JSON file
-        fs.writeFileSync("database.json", JSON.stringify({ userInformation }));
-        res.json({ message: "User information updated successfully" });
-    } catch (error) {
-        console.error("Error updating user information:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+  try {
+      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+      const newData = req.body; // New data to update user information
+      const data = fs.readFileSync("database.json", "utf8");
+      let jsonData = JSON.parse(data); // Parse the JSON data
 
+      // Find the index of the user in the userInformation array
+      const index = jsonData.userInformation.findIndex(user => user.userId === userId);
+      if (index === -1) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      // Update only the specific user information
+      jsonData.userInformation[index] = { ...jsonData.userInformation[index], ...newData };
+
+      // Write the updated JSON data back to the file
+      fs.writeFileSync("database.json", JSON.stringify(jsonData));
+
+      res.json({ message: "User information updated successfully" });
+  } catch (error) {
+      console.error("Error updating user information:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
 //FUEL HISTORY
@@ -210,3 +214,5 @@ app.post('/register', (req, res) => {
 app.listen(port, () => { //console.log("Server starting")
   console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
