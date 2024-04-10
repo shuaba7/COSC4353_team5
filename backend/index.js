@@ -1,19 +1,28 @@
 //api methods
+require('dotenv').config();
 
 const express = require("express");
+const mysql = require("mysql");
 const fs = require("fs");
 const cors = require("cors");
 const multer = require("multer");
-
 const app = express();
 const port = 3000;
-//var app = Express();
+
 app.use(express.json());
 app.use(cors());
 
-
+const db = mysql.createPool({
+  connectionLimit: 10,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+});
 
 // USER INFO
+
+/*
 app.get("/user-information/:userId", (req, res) => {
     try {
       const userId = parseInt(req.params.userId); // Extract userId from URL parameters
@@ -29,7 +38,35 @@ app.get("/user-information/:userId", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   });
+  */
   
+
+  app.get("/user-information/:userId", (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+  
+      // Query the database to get user information
+      db.query('SELECT * FROM userInformation WHERE userId = ?', [userId], (error, results) => {
+        if (error) {
+          console.error("Error fetching user information:", error);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+  
+        // Check if user was found
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found" });
+        }
+  
+        // User found, send user information
+        res.json(results[0]);
+      });
+    } catch (error) {
+      console.error("Error handling request:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+
 // Endpoint to update user information
 app.put("/update-user-information/:userId", (req, res) => {
   try {

@@ -116,7 +116,7 @@ export default {
         state: '',
         zipcode: ''
       },
-      userId: 2// TESTING ID
+      userId: 1// TESTING ID
     };
   },
   created() {
