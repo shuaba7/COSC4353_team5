@@ -68,6 +68,7 @@ app.get("/user-information/:userId", (req, res) => {
 
 
 // Endpoint to update user information
+/*
 app.put("/update-user-information/:userId", (req, res) => {
   try {
       const userId = parseInt(req.params.userId); // Extract userId from URL parameters
@@ -93,7 +94,31 @@ app.put("/update-user-information/:userId", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
   }
 });
+*/
 
+app.put("/update-user-information/:userId", (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+    const newData = req.body; // New data to update user information
+    
+    // Execute SQL query to update user information
+    db.query('UPDATE userInformation SET ? WHERE userId = ?', [newData, userId], (error, results) => {
+      if (error) {
+        console.error("Error updating user information:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({ message: "User information updated successfully" });
+    });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //FUEL HISTORY
 // Endpoint to retrieve user fuel history
