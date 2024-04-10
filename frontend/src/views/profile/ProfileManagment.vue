@@ -1,38 +1,37 @@
 <template>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Profile Management</title>
-</head>
-<body>
- <h1>Client Profile Management  (ID#: {{ this.formData.userId }})</h1>
-    <form id="profileForm">
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Client Profile Management</title>
+    </head>
+    <body>
+      <h1>Client Profile Management  (ID#: {{ formData.userId }})</h1>
+      <form id="profileForm" @submit.prevent="submitForm">
         <div>
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" maxlength="50" required v-model="this.formData.firstName" >
+          <label for="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" maxlength="50" required v-model="formData.firstName">
         </div>
         <div>
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" maxlength="50" required v-model="this.formData.lastName">
+          <label for="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" maxlength="50" required v-model="formData.lastName">
         </div>
         <div>
-            <label for="address1">Address 1:</label>
-            <input type="text" id="address1" name="address1" maxlength="100" required v-model="this.formData.address1">
+          <label for="address1">Address 1:</label>
+          <input type="text" id="address1" name="address1" maxlength="100" required v-model="formData.address1">
         </div>
         <div>
-            <label for="address2">Address 2:<span class="note">(Optional)</span> </label>             
-            <input type="text" id="address2" name="address2" maxlength="100" v-model="this.formData.address2">
-
+          <label for="address2">Address 2:<span class="note">(Optional)</span> </label>             
+          <input type="text" id="address2" name="address2" maxlength="100" v-model="formData.address2">
         </div>
         <div>
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city" maxlength="100" required v-model="this.formData.city">
+          <label for="city">City:</label>
+          <input type="text" id="city" name="city" maxlength="100" required v-model="formData.city">
         </div>
         <div>
-            <label for="state">State:</label>
-            <select id="state" name="state" required v-model="this.formData.state">
+          <label for="state">State:</label>
+          <select id="state" name="state" required v-model="this.formData.state">
                 <option value="">Select State</option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
@@ -88,16 +87,15 @@
             </select>
         </div>
         <div>
-            <label for="zipcode">Zipcode:</label>
-            <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required v-model="this.formData.zipcode">
+          <label for="zipcode">Zipcode:</label>
+          <input type="text" id="zipcode" name="zipcode" pattern="\d*" minlength="5" maxlength="9" title="Please enter only numbers" required v-model="formData.zipcode">
         </div>
         <div>
-            <input type="submit" value="Submit" @click="submitForm">
+          <input type="submit" value="Submit">
         </div>
-    </form>
-</body>
-</html>
-
+      </form>
+    </body>
+  </html>
 </template>
 
 <script>
@@ -116,19 +114,18 @@ export default {
         state: '',
         zipcode: ''
       },
-      userId: 1// TESTING ID
+      userId: 1 // TESTING ID
     };
   },
   created() {
     // Fetch user information when the component is created
-    this.fetchUserInformation(this.userId);
+    this.fetchUserInformation();
   },
   methods: {
     async fetchUserInformation() {
       try {
-        const response = await axios.get(`http://localhost:3000/user-information/${this.userId}`); //LOCALHOSTING BACKEND
+        const response = await axios.get(`http://localhost:3000/user-information/${this.userId}`); // LOCALHOSTING BACKEND
         this.formData = response.data;
-        console.log(this.formData)
       } catch (error) {
         console.error('Error fetching user information:', error);
       }
@@ -136,9 +133,9 @@ export default {
     async submitForm() {
       try {
         // Make a PUT request to update the user information
-        console.log( "Sending", this.formData.firstName)
         await axios.put(`http://localhost:3000/update-user-information/${this.userId}`, this.formData);
         console.log('User information updated successfully!');
+        window.location.reload();
       } catch (error) {
         console.error('Error updating user information:', error);
       }
@@ -191,6 +188,4 @@ form input[type="submit"]:hover {
     color: #666;
     margin-left: 5px;
 }
-
-
 </style>
