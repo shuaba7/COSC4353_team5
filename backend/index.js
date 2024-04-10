@@ -20,33 +20,13 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE,
 });
 
-// USER INFO
-
-/*
-app.get("/user-information/:userId", (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-      const data = fs.readFileSync("database.json", "utf8"); // FOR TESTING PURPOSES
-      const userInformation = JSON.parse(data).userInformation;
-      const user = userInformation.find(user => user.userId === userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      res.json(user);
-    } catch (error) {
-      console.error("Error reading user information:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-  */
-  
-
+// USER INFO  
   app.get("/user-information/:userId", (req, res) => {
     try {
       const userId = parseInt(req.params.userId); // Extract userId from URL parameters
   
       // Query the database to get user information
-      db.query('SELECT * FROM userInformation WHERE userId = ?', [userId], (error, results) => {
+      db.query('SELECT * FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
         if (error) {
           console.error("Error fetching user information:", error);
           return res.status(500).json({ error: "Internal server error" });
@@ -68,33 +48,6 @@ app.get("/user-information/:userId", (req, res) => {
 
 
 // Endpoint to update user information
-/*
-app.put("/update-user-information/:userId", (req, res) => {
-  try {
-      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-      const newData = req.body; // New data to update user information
-      const data = fs.readFileSync("database.json", "utf8");
-      let jsonData = JSON.parse(data); // Parse the JSON data
-
-      // Find the index of the user in the userInformation array
-      const index = jsonData.userInformation.findIndex(user => user.userId === userId);
-      if (index === -1) {
-          return res.status(404).json({ error: "User not found" });
-      }
-
-      // Update only the specific user information
-      jsonData.userInformation[index] = { ...jsonData.userInformation[index], ...newData };
-
-      // Write the updated JSON data back to the file
-      fs.writeFileSync("database.json", JSON.stringify(jsonData));
-
-      res.json({ message: "User information updated successfully" });
-  } catch (error) {
-      console.error("Error updating user information:", error);
-      res.status(500).json({ error: "Internal server error" });
-  }
-});
-*/
 
 app.put("/update-user-information/:userId", (req, res) => {
   try {
@@ -102,7 +55,7 @@ app.put("/update-user-information/:userId", (req, res) => {
     const newData = req.body; // New data to update user information
     
     // Execute SQL query to update user information
-    db.query('UPDATE userInformation SET ? WHERE userId = ?', [newData, userId], (error, results) => {
+    db.query('UPDATE ClientInformation SET ? WHERE userId = ?', [newData, userId], (error, results) => {
       if (error) {
         console.error("Error updating user information:", error);
         return res.status(500).json({ error: "Internal server error" });
