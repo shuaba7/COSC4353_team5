@@ -77,22 +77,44 @@ app.put("/update-user-information/:userId", (req, res) => {
 // Endpoint to retrieve user fuel history
 app.get("/user-fuel-history/:userId", (req, res) => {
   try {
-      const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-      const data = fs.readFileSync("database.json", "utf8");
-      const fuelInformation = JSON.parse(data).fuelInformation;
-      // Filter fuel information based on userId
-      const userFuelHistory = fuelInformation.filter(entry => entry.userID === userId);
-      if (userFuelHistory.length === 0) {
-          return res.status(404).json({ error: "User fuel history not found" });
+    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+
+    // Query the database to get user fuel history
+    db.query('SELECT * FROM FuelHistory WHERE userID = ?', [userId], (error, results) => {
+      if (error) {
+        console.error("Error fetching user fuel history:", error);
+        return res.status(500).json({ error: "Internal server error" });
       }
-      res.json(userFuelHistory);
+
+      // Check if user fuel history was found
+      if (results.length === 0) {
+        return res.status(404).json({ error: "User fuel history not found" });
+      }
+
+      // User fuel history found, send user fuel history information
+      res.json(results);
+    });
   } catch (error) {
-      console.error("Error reading user fuel history:", error);
-      res.status(500).json({ error: "Internal server error" });
+    console.error("Error reading user fuel history:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
+//app.get("/user-fuel-history/:userId", (req, res) => {
+  //try {
+      //const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+      //const data = fs.readFileSync("database.json", "utf8");
+      //const fuelInformation = JSON.parse(data).fuelInformation;
+      // Filter fuel information based on userId
+      //const userFuelHistory = fuelInformation.filter(entry => entry.userID === userId);
+      //if (userFuelHistory.length === 0) {
+          //return res.status(404).json({ error: "User fuel history not found" });
+      //}
+      //res.json(userFuelHistory);
+  //} catch (error) {
+      //console.error("Error reading user fuel history:", error);
+      //res.status(500).json({ error: "Internal server error" });
+  //}
+//});
 
 //FUEL QUOTE FORM
 //End point to calculate fuel price
