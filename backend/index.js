@@ -177,37 +177,32 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
 });
 
 app.put("/user-fuel-quote/:userId", (req, res) => {
-  try {
-    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-    newHistory = req.body; // new data to add to fuel history
-    fs.readFile("database.json", "utf8", (err, data) => {
-      if (err) {
-        console.error("Error reading database file:", err);
-        return res.status(500).json({ error: "Internal server error" });
-      }
+  const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+  const newHistory = req.body; // new data to add to fuel history
 
-      let fuelInformation;
-      try {
-        fuelInformation = JSON.parse(data).fuelInformation;
-      } catch (parseError) {
-        console.error("Error parsing JSON data:", parseError);
-        return res.status(500).json({ error: "Internal server error" });
-      }
-    fuelInformation.push(newHistory);
+  // Check if the user exists
+  db.query('SELECT * FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
+    if (error) {
+      console.error("Error checking user existence:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-    fs.writeFileSync("database.json", JSON.stringify({ fuelInformation }), (writeErr) => {
-      if (writeErr) {
-        console.error("Error writing to database file:", writeErr);
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Insert new fuel history into the database
+    db.query('INSERT INTO FuelHistory (userId, date, gallons, pricePerGallon, totalAmount) VALUES (?, ?, ?, ?, ?)', 
+             [userId, newHistory.date, newHistory.gallons, newHistory.pricePerGallon, newHistory.totalAmount], 
+             (insertError, insertResults) => {
+      if (insertError) {
+        console.error("Error inserting fuel history:", insertError);
         return res.status(500).json({ error: "Internal server error" });
       }
 
       res.json({ message: "Fuel history updated successfully" });
     });
   });
-  } catch (error) {
-    console.error("Error calculating price", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
 });
 
 app.post('/login', (req, res) => {
