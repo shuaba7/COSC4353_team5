@@ -206,45 +206,46 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    try {
-      // Simulate database lookup with Promise
-      const username = req.body.username;
-      const password = req.body.password;
 
-      // find a user in the db with the same username and pass. hardcoding for now
-      const user = {
-        "username": "tempUser123",
-        "password": "TempPass456!"
-      }
-  
-
-      if (user) {
-          res.send({ status: 'success', message: 'Logged in successfully' });
-      } else {
-          res.status(401).send({ status: 'error', message: 'Authentication failed' });
-      }
-  } catch (error) {
-      console.error('Login Error:', error);
-      res.status(500).send({ status: 'error', message: 'Internal server error' });
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send({ message: 'Username and password are required' });
   }
+
+  // Adjust SQL to select the user where username matches.
+  const sql = 'SELECT * FROM userCredentials WHERE username = ? AND password = ?';
+  db.query(sql, [username, password], (err, results) => {
+    if (err) {
+      return res.status(500).send({ status: 'error', message: 'Error accessing the database', error: err.message });
+    }
+    if (results.length === 0) {
+      return res.status(401).send({ status: 'error', message: 'Invalid username or password' });
+    }
+    // If the user is found and the password hash matches, log in the user.
+    res.send({ status: 'success', message: 'Logged in successfully',userId: results[0].userId });
+
+  });
 });
 
 app.post('/register', (req, res) => {
-    try {
-      //create user in the db
-      userinfomation = req.body;
 
-      //using tmp user here
-      const user = {
-        "id":1234,
-        "username": "tempUser123",
-        "password": "TempPass456!"
-      }
-      res.send({ status: 'success', message: 'Registered successfully',userId: user.id });
-  } catch (error) {
-      console.error('Registration Error:', error);
-      res.status(500).send({ status: 'error', message: 'Internal server error' });
+  const { username, password, userId } = req.body;
+  if (!username || !password) {
+    return res.status(400).send({ message: 'Username and password are required' });
   }
+
+  try {
+    const sql = 'INSERT INTO userCredentials (userId,username, password) VALUES (?,?, ?)';
+    db.query(sql, [userId,username, password], (err, result) => {
+      if (err) {
+        return res.status(500).send({ message: 'Error registering the user', error: err.message });
+      }
+      res.send({ status: 'success', message: 'Registered successfully',userId: result.userId });
+    });
+  } catch (err) {
+    res.status(500).send({ status: 'error', message: 'Internal server error' });
+  }
+  
 });
 
 
