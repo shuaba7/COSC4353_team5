@@ -123,7 +123,6 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
     const userId = parseInt(req.params.userId); // Extract userId from URL parameters
 
     //Query database to retrieve address based on userID #
-    //Temporarily hard coded address
     db.query('SELECT address1, address2, city, state, zipcode FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
       if (error) {
         console.error("Error fetching user information:", error);
@@ -140,9 +139,9 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
       const { address1, address2, city, state, zipcode } = user;
       const userSubset = { address1, ...(address2 && { address2 }), city, state, zipcode };
       const valuesArray = Object.values(userSubset);
-      const address = valuesArray.join(', ');
+      const address = valuesArray.join(' ');
 
-      res.json(address);
+      res.json({userId: userId, address: address});
     });
 
   } catch (error) {
@@ -158,18 +157,18 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
   try {
       //Query database to find suggested price based on something???
       //temporarily hard coded suggested price
-      const suggestedPrice = 2.50;
+      const suggestedPricePerGallon = 2.50;
       
-      if (!suggestedPrice) {
+      if (!suggestedPricePerGallon) {
         return res.status(404).json({ error: 'Suggested price not found for the given date'});
       }
 
       
-      const totalAmount = suggestedPrice * gallons;
+      const totalAmountDue = suggestedPricePerGallon * gallons;
 
       
 
-      res.json({suggestedPrice, totalAmount});
+      res.json({suggestedPricePerGallon: suggestedPricePerGallon, totalAmountDue: totalAmountDue});
   } catch (error) {
     console.error("Error calculating price", error);
     res.status(500).json({ error: "Internal server error" });
@@ -192,8 +191,9 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     }
 
     // Insert new fuel history into the database
-    db.query('INSERT INTO fuelHistory (userId, date, gallons, pricePerGallon, totalAmount) VALUES (?, ?, ?, ?, ?)', 
-             [userId, newHistory.date, newHistory.gallons, newHistory.pricePerGallon, newHistory.totalAmount], 
+    db.query('INSERT INTO fuelHistory (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)', 
+             [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, 
+              newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
              (insertError, insertResults) => {
       if (insertError) {
         console.error("Error inserting fuel history:", insertError);
