@@ -80,7 +80,7 @@ app.get("/user-fuel-history/:userId", (req, res) => {
     const userId = parseInt(req.params.userId); // Extract userId from URL parameters
 
     // Query the database to get user fuel history
-    db.query('SELECT * FROM FuelHistory WHERE userID = ?', [userId], (error, results) => {
+    db.query('SELECT * FROM fuelQuote WHERE userID = ?', [userId], (error, results) => {
       if (error) {
         console.error("Error fetching user fuel history:", error);
         return res.status(500).json({ error: "Internal server error" });
