@@ -191,7 +191,7 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     }
 
     // Insert new fuel history into the database
-    db.query('INSERT INTO fuelHistory (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)', 
+    db.query('INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)', 
              [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, 
               newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
              (insertError, insertResults) => {
