@@ -23,6 +23,7 @@
            <label for="deliveryDate">Delivery Date:</label>
            <input type="date" id="deliveryDate" name="deliveryDate" required v-model="this.userData.deliveryDate">
        </div>
+       <button @click.prevent="getFuelPrice" style="margin-bottom: 75px;">Submit</button>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
            <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="this.userData.suggestedPrice">
@@ -31,7 +32,6 @@
            <label for="totalAmountDue">Total Amount Due:</label>
            <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="this.userData.totalAmount">
        </div>
-       <button @click.prevent="getFuelPrice">Submit</button>
    </form>
 </body>
 </html>
@@ -46,13 +46,14 @@ export default {
         return {
             
             userData: {
+                userId: '',
                 gallonsRequested: 0,
                 deliveryAddress: '',
                 deliveryDate: '',
-                suggestedPricePerGallon: null,
-                totalAmountDue: null
+                suggestedPricePerGallon: '',
+                totalAmountDue: ''
             },
-            userId: 1 //TEST,
+            userId: 1 //TEMPORARY HARD CODED USER ID
         };
     },
 
@@ -64,7 +65,8 @@ export default {
         async getAddress() {
             try {
                 const response = await axios.get(`http://localhost:3000/user-fuel-quote/${this.userId}`); 
-                this.userData.deliveryAddress = response.data;
+                this.userData.userId = response.data.userId;
+                this.userData.deliveryAddress = response.data.address;
             } catch (error) {
                 console.error('Error retrieving address:', error);
             }
@@ -73,11 +75,11 @@ export default {
             try {
                 const response = await axios.post(`http://localhost:3000/user-fuel-quote/${this.userId}`, {
                 date: this.deliveryDate,
-                //gallons: this.gallonsRequested
+                gallons: this.gallonsRequested
                 });
                 this.userData.suggestedPricePerGallon = response.data.suggestedPricePerGallon;
                 this.userData.totalAmountDue = response.data.totalAmountDue;
-                this.userData.totalAmountDue = this.userData.suggestedPrice * this.userData.gallonsRequested;
+                this.userData.totalAmountDue = this.userData.suggestedPricePerGallon * this.userData.gallonsRequested;
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
@@ -85,8 +87,8 @@ export default {
         },
         async updateHistory() {
             try {
-                const combinedData = Object.assign({userId: this.userId}, this.userData);
-                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`,combinedData); 
+                //const combinedData = Object.assign({userId: this.userId}, this.userData);
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, this.userData); 
                 console.log(response);
                 
             } catch (error) {
