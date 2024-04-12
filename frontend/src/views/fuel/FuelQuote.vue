@@ -49,8 +49,8 @@ export default {
                 gallonsRequested: 0,
                 deliveryAddress: '',
                 deliveryDate: '',
-                suggestedPrice: null,
-                totalAmount: null
+                suggestedPricePerGallon: null,
+                totalAmountDue: null
             },
             userId: 1 //TEST,
         };
@@ -75,9 +75,9 @@ export default {
                 date: this.deliveryDate,
                 //gallons: this.gallonsRequested
                 });
-                this.userData.suggestedPrice = response.data.suggestedPrice;
-                this.userData.totalAmount = response.data.totalAmount;
-                this.userData.totalAmount = this.userData.suggestedPrice * this.userData.gallonsRequested;
+                this.userData.suggestedPricePerGallon = response.data.suggestedPricePerGallon;
+                this.userData.totalAmountDue = response.data.totalAmountDue;
+                this.userData.totalAmountDue = this.userData.suggestedPrice * this.userData.gallonsRequested;
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
