@@ -50,7 +50,7 @@ export default {
                 gallonsRequested: 0,
                 deliveryAddress: '',
                 deliveryDate: '',
-                suggestedPricePerGallon: '',
+                suggestedPricePerGallon: 'test',
                 totalAmountDue: ''
             },
             userId: 1 //TEMPORARY HARD CODED USER ID
@@ -79,7 +79,7 @@ export default {
                 });
                 this.userData.suggestedPricePerGallon = response.data.suggestedPricePerGallon;
                 this.userData.totalAmountDue = response.data.totalAmountDue;
-                this.userData.totalAmountDue = this.userData.suggestedPricePerGallon * this.userData.gallonsRequested;
+                //this.userData.totalAmountDue = this.userData.suggestedPricePerGallon * this.userData.gallonsRequested;
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
