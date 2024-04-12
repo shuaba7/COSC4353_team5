@@ -124,21 +124,27 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
 
     //Query database to retrieve address based on userID #
     //Temporarily hard coded address
-    const data = fs.readFileSync("database.json", "utf8"); // FOR TESTING PURPOSES
-    const userInformation = JSON.parse(data).userInformation;
-    const user = userInformation.find(user => user.userId === userId);
+    db.query('SELECT address1, address2, city, state, zipcode FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
+      if (error) {
+        console.error("Error fetching user information:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
 
-    if (!user) {
-      // If user is not found, return 404 status code
-      return res.status(404).json({ error: 'User not found' });
-    }
+      if (results.length === 0) {
+        // If user is not found, return 404 status code
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-    const {address1, address2, city, state, zipcode} = user;
-    const userSubset = {address1, ...(address2 && {address2}), city, state, zipcode};
-    const valuesArray = Object.values(userSubset);
-    const address = valuesArray.join(', ');
+      const user = results[0]; // Assuming only one user is returned
 
-    res.json(address);
+      const { address1, address2, city, state, zipcode } = user;
+      const userSubset = { address1, ...(address2 && { address2 }), city, state, zipcode };
+      const valuesArray = Object.values(userSubset);
+      const address = valuesArray.join(', ');
+
+      res.json(address);
+    });
+
   } catch (error) {
     console.error("Error retrieving address: ", error);
     res.status(500).json({ error: "Internal server error" });
@@ -150,7 +156,7 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
   const {date, gallons} = req.body;
 
   try {
-      //Query database to find suggested price based on provided date and address
+      //Query database to find suggested price based on something???
       //temporarily hard coded suggested price
       const suggestedPrice = 2.50;
       
@@ -171,7 +177,6 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
 });
 
 app.put("/user-fuel-quote/:userId", (req, res) => {
-
   try {
     const userId = parseInt(req.params.userId); // Extract userId from URL parameters
     newHistory = req.body; // new data to add to fuel history
