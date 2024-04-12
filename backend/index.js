@@ -192,7 +192,7 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     }
 
     // Insert new fuel history into the database
-    db.query('INSERT INTO FuelHistory (userId, date, gallons, pricePerGallon, totalAmount) VALUES (?, ?, ?, ?, ?)', 
+    db.query('INSERT INTO fuelHistory (userId, date, gallons, pricePerGallon, totalAmount) VALUES (?, ?, ?, ?, ?)', 
              [userId, newHistory.date, newHistory.gallons, newHistory.pricePerGallon, newHistory.totalAmount], 
              (insertError, insertResults) => {
       if (insertError) {
