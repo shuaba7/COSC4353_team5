@@ -152,19 +152,19 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
 
 app.post("/user-fuel-quote/:userId", (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-  const {date, gallons} = req.body;
+  var {date, gallons} = req.body;
 
   try {
       //Query database to find suggested price based on something???
       //temporarily hard coded suggested price
-      const suggestedPricePerGallon = 2.50;
+      var suggestedPricePerGallon = 2.50;
       
       if (!suggestedPricePerGallon) {
         return res.status(404).json({ error: 'Suggested price not found for the given date'});
       }
 
       
-      const totalAmountDue = suggestedPricePerGallon * gallons;
+      var totalAmountDue = suggestedPricePerGallon * gallons;
 
       
 
@@ -191,11 +191,10 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     }
 
     // Insert new fuel history into the database
-    db.query('INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)', 
-             [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, 
-              newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
-             (insertError, insertResults) => {
-      if (insertError) {
+    var sql = 'INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)'
+    db.query(sql, [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
+      function (err, data) {
+      if (err) {
         console.error("Error inserting fuel history:", insertError);
         return res.status(500).json({ error: "Internal server error" });
       }

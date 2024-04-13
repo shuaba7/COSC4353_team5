@@ -26,11 +26,11 @@
        <button @click.prevent="getFuelPrice" style="margin-bottom: 75px;">Submit</button>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
-           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="this.userData.suggestedPrice">
+           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="this.userData.suggestedPricePerGallon">
        </div>
        <div>
            <label for="totalAmountDue">Total Amount Due:</label>
-           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="this.userData.totalAmount">
+           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="this.userData.totalAmountDue">
        </div>
    </form>
 </body>
@@ -50,8 +50,8 @@ export default {
                 gallonsRequested: 0,
                 deliveryAddress: '',
                 deliveryDate: '',
-                suggestedPricePerGallon: 'test',
-                totalAmountDue: ''
+                suggestedPricePerGallon: 0,
+                totalAmountDue: 0
             },
             userId: 1 //TEMPORARY HARD CODED USER ID
         };
