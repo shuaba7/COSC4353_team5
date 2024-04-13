@@ -166,7 +166,6 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
       
       var totalAmountDue = suggestedPricePerGallon * gallons;
 
-      
 
       res.json({suggestedPricePerGallon: suggestedPricePerGallon, totalAmountDue: totalAmountDue});
   } catch (error) {
