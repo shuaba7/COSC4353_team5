@@ -178,6 +178,15 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
   const newHistory = req.body; // new data to add to fuel history
 
+  // Validate data
+  if (typeof newHistory.gallonsRequested !== 'number' ||
+      typeof newHistory.suggestedPricePerGallon !== 'number' ||
+      typeof newHistory.totalAmountDue !== 'number' ||
+      !newHistory.deliveryAddress ||
+      !newHistory.deliveryDate) {
+    return res.status(400).json({ error: 'Invalid data format' });
+  }
+
   // Check if the user exists
   db.query('SELECT * FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
     if (error) {
