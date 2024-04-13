@@ -99,22 +99,7 @@ app.get("/user-fuel-history/:userId", (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-//app.get("/user-fuel-history/:userId", (req, res) => {
-  //try {
-      //const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-      //const data = fs.readFileSync("database.json", "utf8");
-      //const fuelInformation = JSON.parse(data).fuelInformation;
-      // Filter fuel information based on userId
-      //const userFuelHistory = fuelInformation.filter(entry => entry.userID === userId);
-      //if (userFuelHistory.length === 0) {
-          //return res.status(404).json({ error: "User fuel history not found" });
-      //}
-      //res.json(userFuelHistory);
-  //} catch (error) {
-      //console.error("Error reading user fuel history:", error);
-      //res.status(500).json({ error: "Internal server error" });
-  //}
-//});
+
 
 //FUEL QUOTE FORM
 //End point to calculate fuel price
@@ -141,7 +126,7 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
       const valuesArray = Object.values(userSubset);
       const address = valuesArray.join(' ');
 
-      res.json({userId: userId, address: address});
+      res.json({userId: userId, address: address, message: "GETuser-fuel-quote-success"});
     });
 
   } catch (error) {
@@ -167,7 +152,7 @@ app.post("/user-fuel-quote/:userId", (req, res) => {
       var totalAmountDue = suggestedPricePerGallon * gallons; //SOMETHING IS HAPPENING HERE NEED TO FIX
 
 
-      res.json({suggestedPricePerGallon: suggestedPricePerGallon, totalAmountDue: totalAmountDue});
+      res.json({suggestedPricePerGallon: suggestedPricePerGallon, totalAmountDue: totalAmountDue, message: "POSTuser-fuel-quote-success"});
   } catch (error) {
     console.error("Error calculating price", error);
     res.status(500).json({ error: "Internal server error" });
