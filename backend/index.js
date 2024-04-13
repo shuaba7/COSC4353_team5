@@ -38,7 +38,7 @@ const db = mysql.createPool({
         }
   
         // User found, send user information
-        res.json({ message: "User information Found successfully" });
+        res.json(results[0]);
       });
     } catch (error) {
       console.error("Error handling request:", error);
