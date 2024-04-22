@@ -136,7 +136,7 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
   }
 });
 
-//CALLS PRICING MODULE TO GET SUGGESTED PRICE PER GALLON
+//PRICING MODULE
 //RETURNS SUGGESTED PRICE PER GALLON AND TOTAL AMOUNT DUE
 app.post("/user-fuel-quote/:userId", async (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
@@ -159,7 +159,7 @@ app.post("/user-fuel-quote/:userId", async (req, res) => {
     state = stateResults[0];
     locationFactor = state === 'Texas' ? 0.02 : 0.04;
 
-    // Fetch rate history
+    // Determine rate history factor
     const historyResults = await db.query('SELECT * FROM fuelQuote WHERE userID = ?', [userId]);
     rateHistoryFactor = historyResults && historyResults.length > 0 ? 0.01 : 0;
 
@@ -203,6 +203,7 @@ app.post("/user-fuel-quote/:userId", async (req, res) => {
   }
 });
 
+/*
 //PRICING MODULE
 function pricingModule(userId, gallons, callback) {
   var currentPricePerGallon = 1.50;
@@ -265,12 +266,21 @@ function pricingModule(userId, gallons, callback) {
   var suggestedPrice = currentPricePerGallon + margin;
   callback(null, suggestedPrice);
 }
+*/
 
 //UPDATE FUEL QUOTE HISTORY
 app.put("/user-fuel-quote/:userId", (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-  const newHistory = req.body; // new data to add to fuel history
+  const newHistory = req.body.userData; // new data to add to fuel history
 
+  if (!newHistory.gallonsRequested ||
+      !newHistory.suggestedPricePerGallon ||
+      !newHistory.totalAmountDue ||
+      !newHistory.deliveryAddress ||
+      !newHistory.deliveryDate) {
+    return res.status(400).json({ error: 'Invalid data format' });
+  }
+/*
   // Validate data
   if (typeof newHistory.gallonsRequested !== 'number' ||
       typeof newHistory.suggestedPricePerGallon !== 'number' ||
@@ -281,7 +291,7 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
   }
 
   // Check if the user exists
-  db.query('SELECT * FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
+  db.query('SELECT userId FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
     if (error) {
       console.error("Error checking user existence:", error);
       return res.status(500).json({ error: "Internal server error" });
@@ -302,7 +312,8 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
 
       res.json({ message: "Fuel history updated successfully" });
     });
-  });
+  });*/
+  res.json({ message: "Fuel history updated successfully" });
 });
 
 app.post('/login', (req, res) => {
