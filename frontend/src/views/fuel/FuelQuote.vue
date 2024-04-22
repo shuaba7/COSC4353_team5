@@ -13,24 +13,24 @@
    <form id="fuelQuoteForm">
        <div>
            <label for="gallonsRequested">Gallons Requested:</label>
-           <input type="number" id="gallonsRequested" name="gallonsRequested" required min="0" v-model="this.userData.gallonsRequested">
+           <input type="number" id="gallonsRequested" name="gallonsRequested" required min="0" v-model="userData.gallonsRequested">
        </div>
        <div>
            <label for="deliveryAddress">Delivery Address:</label>
-           <input type="text" id="deliveryAddress" name="deliveryAddress" readonly v-model="this.userData.deliveryAddress">
+           <input type="text" id="deliveryAddress" name="deliveryAddress" readonly v-model="userData.deliveryAddress">
        </div>
        <div>
            <label for="deliveryDate">Delivery Date:</label>
-           <input type="date" id="deliveryDate" name="deliveryDate" required v-model="this.userData.deliveryDate">
+           <input type="date" id="deliveryDate" name="deliveryDate" required v-model="userData.deliveryDate">
        </div>
        <button @click.prevent="getFuelPrice" style="margin-bottom: 75px;">Submit</button>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
-           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="this.userData.suggestedPricePerGallon">
+           <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="userData.suggestedPricePerGallon">
        </div>
        <div>
            <label for="totalAmountDue">Total Amount Due:</label>
-           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="this.userData.totalAmountDue">
+           <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="userData.totalAmountDue">
        </div>
    </form>
 </body>
@@ -46,12 +46,12 @@ export default {
         return {
             
             userData: {
-                userId: '',
+                userId: null,
                 gallonsRequested: 0,
-                deliveryAddress: '',
-                deliveryDate: '',
-                suggestedPricePerGallon: 0,
-                totalAmountDue: 0
+                deliveryAddress: null,
+                deliveryDate: null,
+                suggestedPricePerGallon: null,
+                totalAmountDue: null
             },
             userId: 1 //TEMPORARY HARD CODED USER ID
         };
@@ -74,12 +74,15 @@ export default {
         async getFuelPrice() {
             try {
                 const response = await axios.post(`http://localhost:3000/user-fuel-quote/${this.userId}`, {
-                date: this.deliveryDate,
-                gallons: this.gallonsRequested
+                gallons: this.userData.gallonsRequested
                 });
-                this.userData.suggestedPricePerGallon = response.data.suggestedPricePerGallon;
-                this.userData.totalAmountDue = response.data.totalAmountDue;
-                //this.userData.totalAmountDue = this.userData.suggestedPricePerGallon * this.userData.gallonsRequested;
+
+                //console.log('API Response:', response.data); //For debugging purposes
+
+                this.userData.suggestedPricePerGallon = response.data.suggestedPrice;
+                this.userData.totalAmountDue = response.data.totalAmount;
+
+                await this.updateHistory();
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
@@ -87,12 +90,11 @@ export default {
         },
         async updateHistory() {
             try {
-                //const combinedData = Object.assign({userId: this.userId}, this.userData);
-                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, this.userData); 
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.Id}`, this.userData); 
                 console.log(response);
                 
             } catch (error) {
-                console.error('Error retrieving address:', error);
+                console.error('Error updating history:', error);
             }
         }
     }
