@@ -23,7 +23,7 @@
            <label for="deliveryDate">Delivery Date:</label>
            <input type="date" id="deliveryDate" name="deliveryDate" required v-model="userData.deliveryDate">
        </div>
-       <button @click.prevent="getFuelPrice" style="margin-bottom: 75px;">Submit</button>
+       <button @click.prevent="getFuelPrice" :disabled="!userData.deliveryDate" style="margin-bottom: 75px;">Submit</button>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
            <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="userData.suggestedPricePerGallon">
@@ -90,8 +90,8 @@ export default {
         },
         async updateHistory() {
             try {
-                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.Id}`, this.userData); 
-                console.log(response);
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.Id}`, {userData: this.userData}); 
+                console.log(response.data);
                 
             } catch (error) {
                 console.error('Error updating history:', error);
