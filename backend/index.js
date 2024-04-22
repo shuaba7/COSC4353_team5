@@ -102,13 +102,14 @@ app.get("/user-fuel-history/:userId", (req, res) => {
 
 
 //FUEL QUOTE FORM
-//End point to calculate fuel price
+//RETRIEVE ADDRESS FOR FUEL QUOTE FORM
 app.get("/user-fuel-quote/:userId", (req, res) => {
   try {
     const userId = parseInt(req.params.userId); // Extract userId from URL parameters
 
     //Query database to retrieve address based on userID #
-    db.query('SELECT address1, address2, city, state, zipcode FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
+    const sql = 'SELECT address1, address2, city, state, zipcode FROM ClientInformation WHERE userId = ?';
+    db.query(sql, [userId], (error, results) => {
       if (error) {
         console.error("Error fetching user information:", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -135,30 +136,137 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
   }
 });
 
-app.post("/user-fuel-quote/:userId", (req, res) => {
+//CALLS PRICING MODULE TO GET SUGGESTED PRICE PER GALLON
+//RETURNS SUGGESTED PRICE PER GALLON AND TOTAL AMOUNT DUE
+app.post("/user-fuel-quote/:userId", async (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
-  var {date, gallons} = req.body;
+  var gallonsRequested = req.body.gallons;
 
   try {
-      //Query database to find suggested price based on something???
-      //temporarily hard coded suggested price
-      var suggestedPricePerGallon = 2.50;
-      
-      if (!suggestedPricePerGallon) {
-        return res.status(404).json({ error: 'Suggested price not found for the given date'});
+    var currentPricePerGallon = 1.50;
+    var state;
+    var locationFactor;
+    var rateHistoryFactor;
+    var gallonsRequestedFactor;
+    var companyProfitFactor = 0.10;
+
+    
+    // Fetch state
+    const stateResults = await db.query('SELECT state FROM ClientInformation WHERE userId = ?', [userId]);
+    if (!stateResults || stateResults.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    state = stateResults[0];
+    locationFactor = state === 'Texas' ? 0.02 : 0.04;
+
+    // Fetch rate history
+    const historyResults = await db.query('SELECT * FROM fuelQuote WHERE userID = ?', [userId]);
+    rateHistoryFactor = historyResults && historyResults.length > 0 ? 0.01 : 0;
+
+    // Determine gallons requested factor
+    gallonsRequestedFactor = gallonsRequested > 1000 ? 0.02 : 0.03;
+
+    // Calculate margin and suggested price
+    var margin = (locationFactor - rateHistoryFactor + gallonsRequestedFactor + companyProfitFactor) * currentPricePerGallon;
+    var suggestedPrice = currentPricePerGallon + margin;
+    const totalAmountDue = suggestedPrice * gallonsRequested;
+
+    res.json({
+      suggestedPrice: suggestedPrice.toFixed(2),
+      totalAmount: totalAmountDue.toFixed(2),
+      message: "POST user-fuel-quote-success"
+    });
+
+    /*
+    pricingModule(userId, gallonsRequested, (error, suggestedPrice) => {
+      if (error) {
+        console.error("Error: ", error);
+        return res.status(500).json({ error: "Internal server error" });
       }
 
+      if (!suggestedPrice) {
+        return res.status(404).json({ error: "Cannot calculate suggested price per gallon" });
+      }
+
+      const totalAmountDue = suggestedPrice * gallonsRequested;
       
-      var totalAmountDue = suggestedPricePerGallon * gallons; //SOMETHING IS HAPPENING HERE NEED TO FIX
-
-
-      res.json({suggestedPricePerGallon: suggestedPricePerGallon, totalAmountDue: totalAmountDue, message: "POSTuser-fuel-quote-success"});
+      res.json({
+        suggestedPrice: suggestedPrice,
+        totalAmount: totalAmountDue,
+        message: "POST user-fuel-quote-success"
+      });
+    });
+    */
   } catch (error) {
     console.error("Error calculating price", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+//PRICING MODULE
+function pricingModule(userId, gallons, callback) {
+  var currentPricePerGallon = 1.50;
+  var state;
+  var locationFactor;
+  var rateHistoryFactor;
+  var gallonsRequestedFactor;
+  var companyProfitFactor = 0.10;
+
+  //Determine location factor
+  const sqlState = 'SELECT state FROM ClientInformation WHERE userId = ?';
+  db.query(sqlState, [userId], (error, results) => {
+    if (error) {
+      console.error("Error querying state: ", error);
+      callback(error, null);
+      return;
+    }
+
+    if (results.length === 0) {
+      callback(null, null) //user not found
+      return;
+    }
+    
+    state = results[0].state;
+    
+    if (state === 'Texas') {
+      locationFactor = 0.02;
+    } 
+    else {
+      locationFactor = 0.04;
+    }
+  });
+
+  //Determine rate history factor
+  const sqlHistory = 'SELECT * FROM fuelQuote WHERE userID = ?';
+  db.query(sqlHistory, [userId], (error, results) => {
+    if (error) {
+      console.error("Error querying history: ", error);
+      callback(error, null);
+      return;
+    }
+
+    if (results.length === 0) {
+      rateHistoryFactor = 0;
+    }
+    else {
+      rateHistoryFactor = 0.01;
+    }
+  });
+
+  //Determine gallons requested factor
+  if (gallons > 1000) {
+    gallonsRequestedFactor = 0.02;
+  }
+  else {
+    gallonsRequestedFactor = 0.03;
+  }
+
+  var margin = (locationFactor - rateHistoryFactor + gallonsRequestedFactor + companyProfitFactor) * currentPricePerGallon;
+  var suggestedPrice = currentPricePerGallon + margin;
+  callback(null, suggestedPrice);
+}
+
+//UPDATE FUEL QUOTE HISTORY
 app.put("/user-fuel-quote/:userId", (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
   const newHistory = req.body; // new data to add to fuel history
@@ -184,7 +292,7 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     }
 
     // Insert new fuel history into the database
-    var sql = 'INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)'
+    const sql = 'INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)';
     db.query(sql, [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
       function (err, data) {
       if (err) {
