@@ -125,7 +125,7 @@ app.get("/user-fuel-quote/:userId", (req, res) => {
       const { address1, address2, city, state, zipcode } = user;
       const userSubset = { address1, ...(address2 && { address2 }), city, state, zipcode };
       const valuesArray = Object.values(userSubset);
-      const address = valuesArray.join(' ');
+      const address = valuesArray.join(', ');
 
       res.json({userId: userId, address: address, message: "GETuser-fuel-quote-success"});
     });
@@ -273,23 +273,14 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
   const userId = parseInt(req.params.userId); // Extract userId from URL parameters
   const newHistory = req.body.userData; // new data to add to fuel history
 
-  if (!newHistory.gallonsRequested ||
+  if (typeof newHistory.gallonsRequested !== 'number' ||
       !newHistory.suggestedPricePerGallon ||
       !newHistory.totalAmountDue ||
       !newHistory.deliveryAddress ||
       !newHistory.deliveryDate) {
     return res.status(400).json({ error: 'Invalid data format' });
   }
-/*
-  // Validate data
-  if (typeof newHistory.gallonsRequested !== 'number' ||
-      typeof newHistory.suggestedPricePerGallon !== 'number' ||
-      typeof newHistory.totalAmountDue !== 'number' ||
-      !newHistory.deliveryAddress ||
-      !newHistory.deliveryDate) {
-    return res.status(400).json({ error: 'Invalid data format' });
-  }
-
+  
   // Check if the user exists
   db.query('SELECT userId FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
     if (error) {
@@ -300,20 +291,21 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
+  });
 
-    // Insert new fuel history into the database
-    const sql = 'INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)';
-    db.query(sql, [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
-      function (err, data) {
-      if (err) {
-        console.error("Error inserting fuel history:", insertError);
-        return res.status(500).json({ error: "Internal server error" });
-      }
+  // Insert new fuel history into the database
+  const sql = 'INSERT INTO fuelQuote (userId, gallonsRequested, deliveryAddress, deliveryDate, suggestedPricePerGallon, totalAmountDue) VALUES (?, ?, ?, ?, ?, ?)';
+  db.query(sql, [userId, newHistory.gallonsRequested, newHistory.deliveryAddress, newHistory.deliveryDate, newHistory.suggestedPricePerGallon, newHistory.totalAmountDue], 
+    function (err, data) {
+    if (err) {
+      console.error("Error inserting fuel history:", insertError);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-      res.json({ message: "Fuel history updated successfully" });
-    });
-  });*/
-  res.json({ message: "Fuel history updated successfully" });
+    res.json({ message: "Fuel history updated successfully" });
+  });
+  
+  //res.json({ message: "Fuel history updated successfully" }); FOR DEBUGGING PURPOSES
 });
 
 app.post('/login', (req, res) => {
