@@ -90,7 +90,7 @@ export default {
         },
         async updateHistory() {
             try {
-                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.Id}`, {userData: this.userData}); 
+                const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, {userData: this.userData}); 
                 console.log(response.data);
                 
             } catch (error) {
