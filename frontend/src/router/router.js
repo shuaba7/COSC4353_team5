@@ -7,8 +7,6 @@ import FuelQuote from '../views/fuel/FuelQuote.vue'
 import QuoteHistory from '@/views/fuel/QuoteHistory.vue'
 
 
-
-
 const routes = [
     {
       path: '/',
@@ -16,7 +14,7 @@ const routes = [
       component: HomeView
     },
     {
-      path: '/ProfileManagment',
+      path: '/ProfileManagment/:ClientID',
       name: 'ProfileManagment',
       component: ProfileManagment
     },
@@ -26,12 +24,12 @@ const routes = [
       component: LoginClientRegistration
     },
     {
-      path: '/FuelQuote',
+      path: '/FuelQuote/:ClientID',
       name: 'FuelQuote',
       component: FuelQuote
     },    
     {
-      path: '/QuoteHistory',
+      path: '/QuoteHistory/:ClientID',
       name: 'QuoteHistory',
       component: QuoteHistory
     },
