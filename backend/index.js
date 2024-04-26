@@ -27,13 +27,15 @@ const db = mysql.createPool({
   
       // Query the database to get user information
       db.query('SELECT * FROM ClientInformation WHERE userId = ?', [userId], (error, results) => {
-        if (error) {
+        if (error) 
+        {
           console.error("Error fetching user information:", error);
           return res.status(500).json({ error: "Internal server error" });
         }
   
         // Check if user was found
-        if (results.length === 0) {
+        if (results.length === 0) 
+        {
           return res.status(404).json({ error: "User not found" });
         }
   
