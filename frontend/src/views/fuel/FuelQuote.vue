@@ -10,7 +10,7 @@
 <body>
 
    <h1>Fuel Quote Form</h1>
-   <form id="fuelQuoteForm">
+   <form id="fuelQuoteForm" @submit.prevent="updateHistory" :disabled="!userData.totalAmountDue">
        <div>
            <label for="gallonsRequested">Gallons Requested:</label>
            <input type="number" id="gallonsRequested" name="gallonsRequested" required min="0" v-model="userData.gallonsRequested">
@@ -23,7 +23,9 @@
            <label for="deliveryDate">Delivery Date:</label>
            <input type="date" id="deliveryDate" name="deliveryDate" required v-model="userData.deliveryDate">
        </div>
-       <button @click.prevent="getFuelPrice" :disabled="!userData.deliveryDate" style="margin-bottom: 75px;">Submit</button>
+       <div>
+            <input type="button" value="Get Quote" @click.prevent="getFuelPrice" :disabled="!userData.deliveryDate">
+       </div>
        <div>
            <label for="suggestedPrice">Suggested $ / Gallon:</label>
            <input type="text" id="suggestedPrice" name="suggestedPrice" readonly v-model="userData.suggestedPricePerGallon">
@@ -31,6 +33,9 @@
        <div>
            <label for="totalAmountDue">Total Amount Due:</label>
            <input type="text" id="totalAmountDue" name="totalAmountDue" readonly v-model="userData.totalAmountDue">
+       </div>
+       <div>
+          <input type="submit" value="Submit">
        </div>
    </form>
 </body>
@@ -82,7 +87,7 @@ export default {
                 this.userData.suggestedPricePerGallon = response.data.suggestedPrice;
                 this.userData.totalAmountDue = response.data.totalAmount;
 
-                await this.updateHistory();
+                //await this.updateHistory();
             }
             catch(error) {
                 console.error('Error calculating price: ', error);
@@ -92,6 +97,7 @@ export default {
             try {
                 const response = await axios.put(`http://localhost:3000/user-fuel-quote/${this.userId}`, {userData: this.userData}); 
                 console.log(response.data);
+                alert("Successfully saved quote");
                 
             } catch (error) {
                 console.error('Error updating history:', error);
@@ -140,11 +146,34 @@ form input[type="submit"]:hover {
     background-color: #45a049;
 }
 
+form input[type="button"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+form input[type="button"]:hover {
+    background-color: #45a049;
+}
+
 .note {
     font-style: italic;
     color: #666;
     margin-left: 5px;
 }
+
+.btn {
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green */
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s; /* Transition effect on background-color */
+    }
 
 
 </style>
