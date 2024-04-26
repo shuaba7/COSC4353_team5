@@ -308,25 +308,38 @@ app.put("/user-fuel-quote/:userId", (req, res) => {
   //res.json({ message: "Fuel history updated successfully" }); FOR DEBUGGING PURPOSES
 });
 
-app.post('/login', (req, res) => {
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // Cost factor for hashing
 
+
+app.post('/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).send({ message: 'Username and password are required' });
   }
 
   // Adjust SQL to select the user where username matches.
-  const sql = 'SELECT * FROM userCredentials WHERE username = ? AND password = ?';
-  db.query(sql, [username, password], (err, results) => {
+  const sql = 'SELECT * FROM userCredentials WHERE username = ?';
+  db.query(sql, [username], (err, results) => {
     if (err) {
       return res.status(500).send({ status: 'error', message: 'Error accessing the database', error: err.message });
     }
     if (results.length === 0) {
       return res.status(401).send({ status: 'error', message: 'Invalid username or password' });
     }
-    // If the user is found and the password hash matches, log in the user.
-    res.send({ status: 'success', message: 'Logged in successfully',userId: results[0].userId });
+    
+    // Verify the hashed password
+    bcrypt.compare(password, results[0].password, (err, isMatch) => {
+      if (err) {
+        return res.status(500).send({ status: 'error', message: 'Error verifying password', error: err.message });
+      }
+      if (!isMatch) {
+        return res.status(401).send({ status: 'error', message: 'Invalid username or password' });
+      }
 
+      // If the user is found and the password hash matches, log in the user.
+      res.send({ status: 'success', message: 'Logged in successfully', userId: results[0].userId });
+    });
   });
 });
 
@@ -336,26 +349,32 @@ app.post('/register', (req, res) => {
     return res.status(400).send({ message: 'Username and password are required' });
   }
 
-  // Insert into userCredentials table
-  const userSql = 'INSERT INTO userCredentials (username, password) VALUES (?, ?)';
-  db.query(userSql, [username, password], (err, userResult) => {
+  // Hash the password before storing it
+  bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
     if (err) {
-      return res.status(500).send({ message: 'Error registering the user', error: err.message });
+      return res.status(500).send({ message: 'Error hashing password', error: err.message });
     }
 
-    // Use the newly created userId from userCredentials to insert into ClientInformation
-    const userId = userResult.insertId;
-    const clientSql = 'INSERT INTO ClientInformation (userId, firstName, lastName, address1, address2, city, state, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    db.query(clientSql, [userId, '', '', '', '', '', '', ''], (err, clientResult) => {
+    // Insert into userCredentials table with the hashed password
+    const userSql = 'INSERT INTO userCredentials (username, password) VALUES (?, ?)';
+    db.query(userSql, [username, hashedPassword], (err, userResult) => {
       if (err) {
-        return res.status(500).send({ message: 'Error adding client information', error: err.message });
+        return res.status(500).send({ message: 'Error registering the user', error: err.message });
       }
 
-      res.send({ status: 'success', message: 'Registered successfully', userId: userId });
+      // Assuming you also want to insert into ClientInformation as before
+      const userId = userResult.insertId;
+      const clientSql = 'INSERT INTO ClientInformation (userId, firstName, lastName, address1, address2, city, state, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+      db.query(clientSql, [userId, 'First Name', 'Last Name', 'Address 1', 'Address 2', 'City', '', ''], (err, clientResult) => {
+        if (err) {
+          return res.status(500).send({ message: 'Error adding client information', error: err.message });
+        }
+
+        res.send({ status: 'success', message: 'Registered successfully', userId: userId });
+      });
     });
   });
 });
-
 
 
 app.listen(port, () => { //console.log("Server starting")
