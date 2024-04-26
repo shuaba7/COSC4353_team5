@@ -11,23 +11,19 @@
     <body>
 
         <!-- Login Form -->
-        <div id="login-form">
+            <div id="login-form">
             <h1>Login</h1>
-            <form action="/login" method="post">
-                <!-- Update the action URL as needed -->
+            <form @submit.prevent="submitLogin">
                 <div>
-                    <label for="login-username">Username:</label>
-                    <input type="text" id="login-username" name="username" required>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" v-model="loginData.username" required>
                 </div>
                 <div>
-                    <label for="login-password">Password:</label>
-                    <input type="password" id="login-password" name="password" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" v-model="loginData.password" required>
                 </div>
                 <div>
                     <button type="submit">Login</button>
-                </div>
-                <div>
-                    Not a client yet? <a href="#register-form">Register here</a>
                 </div>
             </form>
         </div>
@@ -35,22 +31,20 @@
         <!-- Client Registration Form -->
         <div id="register-form">
             <h1>Registration</h1>
-            <form action="/register" method="post">
-                <!-- Update the action URL as needed -->
+            <form @submit.prevent="submitRegister">
                 <div>
                     <label for="register-username">Username:</label>
-                    <input type="text" id="register-username" name="username" required>
+                    <input type="text" id="register-username" v-model="registerData.username" required>
                 </div>
                 <div>
                     <label for="register-password">Password:</label>
-                    <input type="password" id="register-password" name="password" required>
+                    <input type="password" id="register-password" v-model="registerData.password" required>
                 </div>
                 <div>
                     <button type="submit">Register</button>
                 </div>
             </form>
         </div>
-
     </body>
 
 
@@ -59,12 +53,44 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    setup() {
-        
+    data() {
+        return {
+            loginData: {
+                username: '',
+                password: ''
+            },
+            registerData: {
+                username: '',
+                password: ''
+            }
+        };
     },
+    methods: {
+        async submitLogin() {
+            try {
+                const response = await axios.post('http://localhost:3000/login', this.loginData);
+                // Handle response, e.g., storing tokens, redirecting, etc.
+                console.log(response.data);
+            } catch (error) {
+                console.error('Login error:', error);
+            }
+        },
+        async submitRegister() {
+            try {
+                const response = await axios.post('http://localhost:3000/register', this.registerData);
+                // Handle response, such as logging in the user or displaying messages
+                console.log(response.data);
+            } catch (error) {
+                console.error('Registration error:', error);
+            }
+        }
+    }
 }
 </script>
+
 
 <style scoped>
 form {

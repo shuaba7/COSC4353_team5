@@ -332,11 +332,11 @@ app.post('/login', (req, res) => {
 
 app.post('/register', (req, res) => {
 
-  const { username, password, userId } = req.body;
+  const { username, password} = req.body;
   if (!username || !password) {
     return res.status(400).send({ message: 'Username and password are required' });
   }
-
+  const userId = 2
   try {
     const sql = 'INSERT INTO userCredentials (userId,username, password) VALUES (?,?, ?)';
     db.query(sql, [userId,username, password], (err, result) => {
