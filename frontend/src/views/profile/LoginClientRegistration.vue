@@ -84,7 +84,7 @@ export default {
                 console.log(response.data);
                 if (response.data.status === 'success') {
                     window.location.reload();
-                    alert('success, please log in');
+                    alert('Success!, please log in');
                 }
             } catch (error) {
                 console.error('Registration error:', error.response ? error.response.data : error);

@@ -9,14 +9,14 @@
     <body>
       <h1>Client Profile Management  (ID#: {{ $route.params.ClientID }})</h1>
       <form id="profileForm" @submit.prevent="submitForm">
-        <div>
-          <label for="firstName">First Name:</label>
-          <input type="text" id="firstName" name="firstName" maxlength="50" required v-model="formData.firstName">
-        </div>
-        <div>
-          <label for="lastName">Last Name:</label>
-          <input type="text" id="lastName" name="lastName" maxlength="50" required v-model="formData.lastName">
-        </div>
+              <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" maxlength="50" required pattern="[A-Za-z]+" title="Please enter only letters" v-model="formData.firstName">
+      </div>
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" maxlength="50" required pattern="[A-Za-z]+" title="Please enter only letters" v-model="formData.lastName">
+      </div>
         <div>
           <label for="address1">Address 1:</label>
           <input type="text" id="address1" name="address1" maxlength="100" required v-model="formData.address1">
