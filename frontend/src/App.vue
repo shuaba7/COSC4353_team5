@@ -4,10 +4,16 @@
     <nav>
       <div class="nav-center">
         <router-link to="/" class="a">Home</router-link>
-        <router-link to="/loginClientRegistration" class="a">Log In</router-link>
-        <router-link to="/ProfileManagment" class="a">Manage Profile</router-link>
-        <router-link to="/FuelQuote" class="a">Fuel Quote</router-link>
-        <router-link to="/QuoteHistory" class="a">Quote History</router-link>
+        <div v-if="ClientID == -1">
+          <router-link to="/loginClientRegistration" class="a">Log In</router-link>
+        </div>
+
+        <div v-else>
+          <router-link :to="{name: 'ProfileManagment', params: {ClientID: this.ClientID} }" > Manage Profile </router-link>
+          <router-link :to="{name: 'FuelQuote', params: {ClientID: this.ClientID} }" > Fuel Quote </router-link>
+          <router-link :to="{name: 'QuoteHistory', params: {ClientID: this.ClientID} }" > Quote History </router-link>
+        </div>
+
       </div>
     </nav>
   </div>
@@ -20,6 +26,12 @@
 
 <script>
 export default {
+  data() {
+    return {
+      ClientID: 2
+      , // -1, not logged in  
+    };
+  },
   components: {
 
   }

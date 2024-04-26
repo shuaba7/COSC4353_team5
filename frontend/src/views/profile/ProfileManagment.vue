@@ -7,7 +7,7 @@
       <title>Client Profile Management</title>
     </head>
     <body>
-      <h1>Client Profile Management  (ID#: {{ formData.userId }})</h1>
+      <h1>Client Profile Management  (ID#: {{ $route.params.ClientID }})</h1>
       <form id="profileForm" @submit.prevent="submitForm">
         <div>
           <label for="firstName">First Name:</label>
@@ -114,7 +114,7 @@ export default {
         state: '',
         zipcode: ''
       },
-      userId: 1 // TESTING ID
+      userId: this.$route.params.ClientID // TESTING ID
     };
   },
   created() {

@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       quoteHistory: [],
-      userID: 1 // TESTING HARD CODED
+      userID: this.$route.params.ClientID 
     };
   },
   created() {

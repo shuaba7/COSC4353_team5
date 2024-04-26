@@ -53,7 +53,7 @@ export default {
                 suggestedPricePerGallon: null,
                 totalAmountDue: null
             },
-            userId: 1 //TEMPORARY HARD CODED USER ID
+            userId: this.$route.params.ClientID 
         };
     },
 
