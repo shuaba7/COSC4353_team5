@@ -331,24 +331,29 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-
-  const { username, password} = req.body;
+  const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).send({ message: 'Username and password are required' });
   }
-  const userId = 2
-  try {
-    const sql = 'INSERT INTO userCredentials (userId,username, password) VALUES (?,?, ?)';
-    db.query(sql, [userId,username, password], (err, result) => {
+
+  // Insert into userCredentials table
+  const userSql = 'INSERT INTO userCredentials (username, password) VALUES (?, ?)';
+  db.query(userSql, [username, password], (err, userResult) => {
+    if (err) {
+      return res.status(500).send({ message: 'Error registering the user', error: err.message });
+    }
+
+    // Use the newly created userId from userCredentials to insert into ClientInformation
+    const userId = userResult.insertId;
+    const clientSql = 'INSERT INTO ClientInformation (userId, firstName, lastName, address1, address2, city, state, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(clientSql, [userId, '', '', '', '', '', '', ''], (err, clientResult) => {
       if (err) {
-        return res.status(500).send({ message: 'Error registering the user', error: err.message });
+        return res.status(500).send({ message: 'Error adding client information', error: err.message });
       }
-      res.send({ status: 'success', message: 'Registered successfully',userId: result.userId });
+
+      res.send({ status: 'success', message: 'Registered successfully', userId: userId });
     });
-  } catch (err) {
-    res.status(500).send({ status: 'error', message: 'Internal server error' });
-  }
-  
+  });
 });
 
 

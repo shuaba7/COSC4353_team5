@@ -135,7 +135,9 @@ export default {
         // Make a PUT request to update the user information
         await axios.put(`http://localhost:3000/update-user-information/${this.userId}`, this.formData);
         console.log('User information updated successfully!');
+        alert("Successfully made changes, please relog to view changes");
         window.location.reload();
+        
       } catch (error) {
         console.error('Error updating user information:', error);
       }

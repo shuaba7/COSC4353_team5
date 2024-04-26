@@ -72,19 +72,22 @@ export default {
         async submitLogin() {
             try {
                 const response = await axios.post('http://localhost:3000/login', this.loginData);
-                // Handle response, e.g., storing tokens, redirecting, etc.
                 console.log(response.data);
+                this.$emit('updateID', response.data.userId);
             } catch (error) {
-                console.error('Login error:', error);
+                console.error('Login error:', error.response ? error.response.data : error);
             }
         },
         async submitRegister() {
             try {
                 const response = await axios.post('http://localhost:3000/register', this.registerData);
-                // Handle response, such as logging in the user or displaying messages
                 console.log(response.data);
+                if (response.data.status === 'success') {
+                    window.location.reload();
+                    alert('success, please log in');
+                }
             } catch (error) {
-                console.error('Registration error:', error);
+                console.error('Registration error:', error.response ? error.response.data : error);
             }
         }
     }
