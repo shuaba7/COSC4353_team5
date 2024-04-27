@@ -30,6 +30,7 @@
           </tbody>
         </table>
       </div>
+      <button id="deleteLastFuelEntryBtn">Delete Last Fuel Entry</button>    
     </body>
   </html>
 </template>
