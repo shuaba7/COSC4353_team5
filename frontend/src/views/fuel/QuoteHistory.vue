@@ -94,27 +94,3 @@ export default {
     background-color: #f2f2f2;
 }
 </style>
-
-
-<style scoped>
-.title {
-    text-align: center;
-}
-
-.quote-table {
-    width: 80%;
-    margin: 0 auto;
-    border-collapse: collapse;
-}
-
-.quote-table th,
-.quote-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.quote-table th {
-    background-color: #f2f2f2;
-}
-</style>
