@@ -30,7 +30,7 @@
           </tbody>
         </table>
       </div>
-      <button id="deleteLastFuelEntryBtn">Delete Last Fuel Entry</button>    
+      <button @click="deleteLastFuelEntry">Delete Last Fuel Entry</button> 
     </body>
   </html>
 </template>
@@ -57,6 +57,16 @@ export default {
         .catch(error => {
           console.error('Error fetching user fuel history:', error);
         });
+    }
+    async deleteLastFuelEntry() {
+        try {
+          const response = await axios.delete(`http://localhost:3000/delete-last-fuel-entry/${this.userID}`);
+          alert(response.data.message); // Display response message in an alert
+          this.getUserFuelHistory(); // Refresh the fuel history after deletion
+        } catch (error) {
+          console.error('Error deleting last fuel entry:', error);
+          alert('An error occurred while deleting the fuel entry.');
+        }
     }
   }
 };
