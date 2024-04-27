@@ -102,6 +102,44 @@ app.get("/user-fuel-history/:userId", (req, res) => {
   }
 });
 
+//DELETE LAST FUEL HISTORY
+// Endpoint to delete the last entry in user fuel history
+app.delete("/delete-last-fuel-entry/:userId", (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId); // Extract userId from URL parameters
+
+    // Query the database to get the last fuel entry
+    const getLastEntryQuery = 'SELECT * FROM fuelQuote WHERE userId = ? ORDER BY id DESC LIMIT 1';
+    db.query(getLastEntryQuery, [userId], (error, results) => {
+      if (error) {
+        console.error("Error fetching last fuel entry:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      // Check if there are any entries to delete
+      if (results.length === 0) {
+        return res.status(404).json({ error: "No fuel entries found for deletion" });
+      }
+
+      const lastEntryId = results[0].id;
+
+      // Delete the last fuel entry
+      const deleteQuery = 'DELETE FROM fuelQuote WHERE id = ?';
+      db.query(deleteQuery, [lastEntryId], (deleteError, deleteResults) => {
+        if (deleteError) {
+          console.error("Error deleting last fuel entry:", deleteError);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+
+        res.json({ message: "Last fuel entry deleted successfully" });
+      });
+    });
+  } catch (error) {
+    console.error("Error deleting last fuel entry:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 //FUEL QUOTE FORM
 //RETRIEVE ADDRESS FOR FUEL QUOTE FORM
